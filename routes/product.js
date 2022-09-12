@@ -16,9 +16,9 @@ router.post('/add', auth.authenticateToken, checkRole.checkRole, (req, res) => {
     })
 })
 
-router.get('/get', auth.authenticateToken, (req, res, next) => {
-    var query = "select p.id,p.name,p.description,p.price,p.status,c.id as categoryId,c.name as categoryName from product as p INNER JOIN category as c where p.categoryId = c.id";
-    connection.query(query, (err, results) => {
+router.get('/get', auth.authenticateToken,(req,res,next) => {
+    var query = "select p.id,p.name,p.description,p.price,p.status,c.id as categoryId,c.name as categoryName from product as p INNER JOIN category as c where p.id = c.id";
+    connection.query(query,(err, results) =>{
         if (!err) {
             return res.status(200).json(results);
         } else {
@@ -81,15 +81,15 @@ router.delete('/delete/:id', auth.authenticateToken, checkRole.checkRole, (req, 
     })
 })
 
-router.patch('/updateStatus',auth.authenticateToken,checkRole.checkRole,(req,res,next)=> {
+router.patch('/updateStatus', auth.authenticateToken, checkRole.checkRole, (req, res, next) => {
     let user = req.body;
     var query = "update product set status=? where id=?";
-    connection.query(query,[user.status,user.id],(err,results)=>{
-        if(!err){
-            if(results.affectedRows == 0){
-                return res.status(404).json({message:"Product id does not found"});
+    connection.query(query, [user.status, user.id], (err, results) => {
+        if (!err) {
+            if (results.affectedRows == 0) {
+                return res.status(404).json({ message: "Product id does not found" });
             }
-            return res.status(200).json({message:"Product Status Updated Successfully."})
+            return res.status(200).json({ message: "Product Status Updated Successfully." })
         } else {
             return res.status(500).json(err)
         }
